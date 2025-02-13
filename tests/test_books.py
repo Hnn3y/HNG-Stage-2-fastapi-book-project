@@ -50,3 +50,18 @@ def test_delete_book():
 
     response = client.get("/books/3")
     assert response.status_code == 404
+
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
+def test_get_existing_book():
+    response = client.get("/api/v1/books/1")
+    assert response.status_code == 200
+    assert response.json()["title"] == "The Great Gatsby"
+
+def test_get_nonexistent_book():
+    response = client.get("/api/v1/books/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Book not found"
