@@ -1,13 +1,23 @@
 from fastapi import APIRouter, HTTPException
-from ..database import BookDB
-from ..models import Book
+from typing import List
+from app.models.book import Book
+from app.database.books import get_book_by_id, get_all_books
 
-router = APIRouter()
-db = BookDB()
+router = APIRouter(
+    prefix="/api/v1/books",
+    tags=["books"]
+)
 
-@router.get("/api/v1/books/{book_id}", response_model=Book)
+@router.get("/{book_id}", response_model=Book)
 async def get_book(book_id: int):
-    book = db.get_book(book_id)
-    if book is None:
-        raise HTTPException(status_code=404, detail="Book not found")
+    book = await get_book_by_id(book_id)
+    if not book:
+        raise HTTPException(
+            status_code=404,
+            detail="Book not found"
+        )
     return book
+
+@router.get("/", response_model=List[Book])
+async def list_books():
+    return await get_all_books()

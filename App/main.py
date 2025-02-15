@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
+from app.routers import books
+
 
 app = FastAPI()
 
@@ -27,3 +29,5 @@ async def get_book(book_id: int):
 @app.get("/api/v1/books", response_model=List[Book])
 async def get_books():
     return books_db
+
+app.include_router(books.router)
