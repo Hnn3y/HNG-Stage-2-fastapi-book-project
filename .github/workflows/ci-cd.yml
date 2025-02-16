@@ -22,7 +22,7 @@ jobs:
     - name: Run tests
       run: |
         export PYTHONPATH=$PYTHONPATH:$(pwd)
-    pytest
+        pytest  
 
   deploy:
     needs: test
